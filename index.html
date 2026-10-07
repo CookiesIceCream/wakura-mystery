@@ -49,7 +49,7 @@
       flex-direction: column;
     }
 
-    /* 上部ヘッダー（七尾湾の深碧グラデーションと金ライン） */
+    /* 上部ヘッダー */
     header {
       background: linear-gradient(135deg, var(--wakura-ocean-deep) 0%, var(--wakura-ocean-mid) 100%);
       border-bottom: 2px solid var(--wakura-gold);
@@ -101,12 +101,11 @@
       background: #e6eef2;
     }
 
-    /* 地図タイルの彩度調整（明るく透明感のあるトーンへ） */
     .leaflet-tile {
       filter: saturate(85%) contrast(98%) brightness(101%);
     }
 
-    /* カスタムマーカーデザイン（清潔感ある白×深碧フレーム） */
+    /* マーカーデザイン */
     .custom-marker {
       background: #ffffff;
       border: 2px solid var(--wakura-ocean-mid);
@@ -150,7 +149,7 @@
       50% { transform: scale(1.07); }
     }
 
-    /* 下部情報バー（清潔感のある白地×海碧のコントロール） */
+    /* 下部情報バー */
     footer {
       background: #ffffff;
       border-top: 1px solid var(--wakura-border);
@@ -193,7 +192,7 @@
       transform: scale(0.97);
     }
 
-    /* モーダル枠（和倉温泉の海・和紙・金の装飾） */
+    /* モーダル枠（NIKKE風和風ポップアップ） */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -293,87 +292,52 @@
       overflow-y: auto;
     }
 
-    /* スポット案内セクション */
-    .spot-guide-img {
-      width: 100%;
-      height: 140px;
-      border-radius: 8px;
-      object-fit: cover;
-      margin-bottom: 12px;
-      border: 1px solid var(--wakura-border);
-      background: #e1ebf0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 42px;
-      color: var(--wakura-teal);
-    }
-
-    .spot-desc {
-      font-size: 13px;
+    /* 謎解き入力画面（問題文は映さず、NIKKE風のUIに刷新） */
+    .riddle-instruction {
+      font-size: 13.5px;
       line-height: 1.7;
       color: var(--wakura-text-main);
-      margin-bottom: 16px;
-    }
-
-    .google-nav-link {
-      display: block;
       text-align: center;
-      background: linear-gradient(135deg, var(--wakura-teal) 0%, var(--wakura-ocean-mid) 100%);
-      color: #ffffff;
-      text-decoration: none;
-      padding: 11px;
-      border-radius: 24px;
-      font-size: 13px;
-      font-weight: 700;
-      box-shadow: 0 4px 10px rgba(47, 122, 153, 0.25);
-    }
-
-    /* 謎解きセクション */
-    .riddle-story {
-      background: #ffffff;
-      border-left: 4px solid var(--wakura-teal);
-      border-radius: 0 6px 6px 0;
-      padding: 10px 14px;
-      font-size: 12.5px;
       margin-bottom: 14px;
-      line-height: 1.6;
-      color: var(--wakura-text-main);
-      box-shadow: 0 2px 6px rgba(15, 53, 79, 0.05);
+      font-weight: 600;
     }
 
-    .riddle-item {
+    .clue-visual-box {
       background: #ffffff;
-      border: 1px solid var(--wakura-border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      margin-bottom: 9px;
-      box-shadow: 0 1px 4px rgba(15, 53, 79, 0.04);
+      border: 1.5px solid var(--wakura-border);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(15, 53, 79, 0.05);
     }
 
-    .riddle-q {
-      font-size: 12px;
-      font-weight: 700;
+    .clue-icon {
+      font-size: 44px;
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+
+    .clue-title {
+      font-size: 13px;
       color: var(--wakura-accent-red);
-      margin-bottom: 4px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
-    .riddle-text {
-      font-size: 12px;
-      color: var(--wakura-text-main);
-      line-height: 1.5;
+    .clue-sub {
+      font-size: 11.5px;
+      color: var(--wakura-text-sub);
+      margin-top: 4px;
     }
 
-    /* 解答入力欄 */
     .answer-box-wrap {
-      margin-top: 18px;
-      padding-top: 16px;
-      border-top: 1px dashed var(--wakura-border);
+      margin-top: 10px;
       text-align: center;
     }
 
     .answer-label {
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 700;
       margin-bottom: 10px;
       display: block;
@@ -422,9 +386,50 @@
       box-shadow: 0 4px 12px rgba(192, 56, 56, 0.3);
       font-family: inherit;
       letter-spacing: 1px;
+      transition: all 0.2s;
     }
 
-    /* 正解・新スポット解放ファンファーレ */
+    .submit-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* スポット案内セクション */
+    .spot-guide-img {
+      width: 100%;
+      height: 140px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-bottom: 12px;
+      border: 1px solid var(--wakura-border);
+      background: #e1ebf0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      color: var(--wakura-teal);
+    }
+
+    .spot-desc {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--wakura-text-main);
+      margin-bottom: 16px;
+    }
+
+    .google-nav-link {
+      display: block;
+      text-align: center;
+      background: linear-gradient(135deg, var(--wakura-teal) 0%, var(--wakura-ocean-mid) 100%);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 11px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(47, 122, 153, 0.25);
+    }
+
+    /* 正解ファンファーレポップアップ */
     .celebrate-popup {
       position: fixed;
       top: 50%; left: 50%;
@@ -475,7 +480,7 @@
 
   <!-- フッター -->
   <footer>
-    <button class="hint-btn" onclick="openStoryGuide()">📜 あらすじ・手引き</button>
+    <button class="hint-btn" onclick="openStoryGuide()">📜 あらすじ・遊び方</button>
     <button class="nav-btn" onclick="focusCurrentTarget()">📍 次の目的地へ</button>
   </footer>
 
@@ -492,17 +497,32 @@
       </div>
 
       <div class="modal-body">
-        <!-- 謎解きコンテンツ -->
+        <!-- 謎解きコンテンツ（問題文は出さず入力に特化） -->
         <div id="tab-riddle">
-          <div class="riddle-story" id="riddle-story-text">ストーリー</div>
-          <div id="riddle-list"></div>
+          <!-- 案内テキスト -->
+          <p class="riddle-instruction" id="riddle-prompt-text">
+            スポットの謎解きシートを手がかりに答えを導き出し、下の入力欄に入力してください。
+          </p>
 
-          <div class="answer-box-wrap">
-            <span class="answer-label">答えを入力してください（ひらがな）</span>
+          <!-- 手がかりモチーフ枠（NIKKE風ビジュアル枠） -->
+          <div class="clue-visual-box" id="clue-box">
+            <span class="clue-icon" id="clue-icon">📜</span>
+            <div class="clue-title" id="clue-title">「わくたまくんの文字パズル」</div>
+            <div class="clue-sub" id="clue-sub">謎解き用紙の文字パズルを解いて目的地を特定せよ</div>
+          </div>
+
+          <!-- 入力欄エリア -->
+          <div class="answer-box-wrap" id="answer-box-wrap">
+            <span class="answer-label" id="answer-label">答えはひらがなで入力してください</span>
             <div class="input-row">
               <input type="text" id="answer-input" class="answer-input" placeholder="ここに入力">
             </div>
             <button class="submit-btn" onclick="checkAnswer()">判定する</button>
+          </div>
+
+          <!-- クリア済み表示エリア -->
+          <div id="cleared-message-box" style="display:none; text-align:center; padding:20px; font-weight:700; color:var(--wakura-teal);">
+            ✨ このスポットの謎はクリア済みです！
           </div>
         </div>
 
@@ -526,7 +546,7 @@
 
   <script>
     // --------------------------------------------------
-    // スポットと謎解きデータ (PDF準拠)
+    // スポットデータ（設問テキストは表示せず、入力＆誘導のみ）
     // --------------------------------------------------
     const spotsData = [
       {
@@ -538,18 +558,11 @@
         desc: "和倉温泉の中心にある観光拠点。周辺の宿泊施設やお祭り、観光体験情報が揃うスタート地点です。",
         unlocked: true,
         cleared: false,
-        story: "観光案内地図の裏に奇妙な暗号が書かれていた。「和倉の街を深く知りたければ、4つの手がかりを集めて文字を拾い、熱気渦巻く『あの場所』を目指せ！」",
-        questions: [
-          { q: "【第1問】", t: "1200年前に傷ついた鳥が体を癒やしたことから発見された、和倉の名物（4文字・おんせん）" },
-          { q: "【第2問】", t: "七尾湾の冬の味覚！ コリコリした食感の海の幸（3文字・なまこ）" },
-          { q: "【第3問】", t: "「湯っ足りパーク」にある海の絶景足湯の名前（つまこいぶねのゆ）" },
-          { q: "【第4問】", t: "名勝庭園と夕日の光が美しい和倉の名刹のお寺（せいりんじ）" },
-          { q: "【第5問】", t: "殻ごと焼いて食べるのも絶品な冬の貝類（2文字・かき）" },
-          { q: "【第6問】", t: "能登で「くだらない・バカ」と気抜けした時に使う方言（5文字・はいだるい）" },
-          { q: "【第7問】", t: "甲羅とハサミを持つ冬の味覚の王様（2文字・かに）" },
-          { q: "【第8問】", t: "金沢駅〜和倉温泉駅を結ぶ特別な観光列車の名前（はなよめのれん）" }
-        ],
-        hint: "8つの答えの指定文字を縦に並べると…？（8文字）",
+        prompt: "和倉温泉観光会館で手に入れた【挑戦1：わくたまくんの文字パズル】の答えを導き出し、下の入力欄に入力してください。",
+        clueIcon: "📜",
+        clueTitle: "【手がかり】文字パズル（8文字）",
+        clueSub: "用紙の8つのマス目を埋めて導き出される目的地は？",
+        charCountText: "答えはひらがな（8文字）で入力してください",
         correctAnswers: ["おまつりかいかん", "オマツリカイカン"],
         nextSpotName: "和倉温泉 お祭り会館"
       },
@@ -562,15 +575,11 @@
         desc: "高さ12m・20トンの日本一の山車『でか山（青柏祭）』や石崎奉燈祭の巨大キリコが展示されている体感型ミュージアムです。",
         unlocked: false,
         cleared: false,
-        story: "巨大な展示と熱気を体感したあなた！ 出口付近に新たなメッセージが置かれていた。『お祭りにまつわる5つの謎を解いたら、次はあま〜いご褒美が待っているよ！』",
-        questions: [
-          { q: "【第1問】", t: "周囲72kmの島で向田の火祭が行われる島の名前（4文字・のとじま）" },
-          { q: "【第2問】", t: "石崎奉燈祭をはじめ、夜空を照らす巨大な灯籠の呼び名（4文字・ほうとう）" },
-          { q: "【第3問】", t: "神社の神様がお移りになる特別な乗り物の名前（3文字・みこし）" },
-          { q: "【第4問】", t: "向田の火祭で、松明が海側へ「○○○○」と豊漁（4文字・たおれる）" },
-          { q: "【第5問】", t: "9月20日に行われる国の重要無形民俗文化財の枠旗祭り（おくまかぶとまつり）" }
-        ],
-        hint: "5つの答えの頭文字などを拾うと…（5文字）",
+        prompt: "お祭り会館の展示スペース出口付近にある【挑戦2：わくたまくんの文字クイズ】を解き、下の入力欄に入力してください。",
+        clueIcon: "🏮",
+        clueTitle: "【手がかり】文字クイズ（5文字）",
+        clueSub: "お祭りの5つの謎を解いて導き出されるあま〜いご褒美スポットは？",
+        charCountText: "答えはひらがな（5文字）で入力してください",
         correctAnswers: ["のとみるく", "ノトミルク"],
         nextSpotName: "能登ミルク"
       },
@@ -583,9 +592,11 @@
         desc: "能登半島の大自然で育った生乳を使用した絶品ジェラート（500円）やスイーツが楽しめる超人気カフェです！",
         unlocked: false,
         cleared: false,
-        story: "すべての謎を解き明かした！ 能登の歴史、祭り、そして豊かな恵みを巡ったあなたへ、冷たくて甘い最高のご褒美が待っています！",
-        questions: [],
-        hint: "",
+        prompt: "すべての謎を解き明かしました！ 美味しいジェラートやスイーツを味わって、和倉温泉の素敵な旅をお楽しみください！",
+        clueIcon: "🍨",
+        clueTitle: "【ゴール達成】お疲れさまでした！",
+        clueSub: "能登のめぐみいっぱいのスイーツをご堪能ください",
+        charCountText: "",
         correctAnswers: [],
         nextSpotName: ""
       }
@@ -650,23 +661,27 @@
       document.getElementById('google-maps-link').href = 
         `https://www.google.com/maps/dir/?api=1&destination=${currentActiveSpot.lat},${currentActiveSpot.lng}`;
 
-      // 謎解きタブの中身生成
-      document.getElementById('riddle-story-text').innerText = currentActiveSpot.story;
-      const listContainer = document.getElementById('riddle-list');
-      listContainer.innerHTML = '';
+      // 謎解きタブの中身更新（問題文は描画しない）
+      document.getElementById('riddle-prompt-text').innerText = currentActiveSpot.prompt;
+      document.getElementById('clue-icon').innerText = currentActiveSpot.clueIcon;
+      document.getElementById('clue-title').innerText = currentActiveSpot.clueTitle;
+      document.getElementById('clue-sub').innerText = currentActiveSpot.clueSub;
 
-      if (currentActiveSpot.questions.length > 0 && !currentActiveSpot.cleared) {
-        currentActiveSpot.questions.forEach(item => {
-          const div = document.createElement('div');
-          div.className = 'riddle-item';
-          div.innerHTML = `<div class="riddle-q">${item.q}</div><div class="riddle-text">${item.t}</div>`;
-          listContainer.appendChild(div);
-        });
-        document.querySelector('.answer-box-wrap').style.display = 'block';
+      const answerWrap = document.getElementById('answer-box-wrap');
+      const clearedBox = document.getElementById('cleared-message-box');
+
+      if (currentActiveSpot.correctAnswers.length > 0 && !currentActiveSpot.cleared) {
+        answerWrap.style.display = 'block';
+        clearedBox.style.display = 'none';
+        document.getElementById('answer-label').innerText = currentActiveSpot.charCountText;
         document.getElementById('answer-input').value = '';
+      } else if (currentActiveSpot.cleared) {
+        answerWrap.style.display = 'none';
+        clearedBox.style.display = 'block';
       } else {
-        listContainer.innerHTML = `<div style="text-align:center; padding: 20px; font-weight:700; color:var(--wakura-teal);">✨ このスポットの謎はクリア済みです！</div>`;
-        document.querySelector('.answer-box-wrap').style.display = 'none';
+        // ゴール地点（解答入力不要）
+        answerWrap.style.display = 'none';
+        clearedBox.style.display = 'none';
       }
 
       switchTab('riddle');
@@ -720,7 +735,7 @@
           showCelebrate("全問クリア！ おめでとうございます！<br>能登ミルクで美味しいジェラートを味わって、素敵な和倉の旅を締めくくってください！");
         }
       } else {
-        alert("残念！ 答えが違うようだ…！\n問題の手がかりをもう一度見直してみよう。");
+        alert("残念！ 答えが違うようだ…！\n手元の謎解き用紙をもう一度確認してみよう。");
       }
     }
 
@@ -734,7 +749,7 @@
     }
 
     function openStoryGuide() {
-      alert("【遊び方】\n1. マップ上の光るピンをタップ！\n2. 謎を解いて「答え」を入力欄に送信！\n3. 正解すると新しいスポットが解放されます。\n4. 「スポット案内」からGoogleマップナビも利用できます。");
+      alert("【遊び方】\n1. 手元の「わくたまくんからの挑戦状」の謎を解く！\n2. マップ上のピンをタップして答えを入力！\n3. 正解すると新しいスポットが解放されます。\n4. 「スポット案内」からGoogleマップナビも利用できます。");
     }
 
     function focusCurrentTarget() {
