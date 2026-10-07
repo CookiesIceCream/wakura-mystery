@@ -16,12 +16,19 @@
 
   <style>
     :root {
-      --primary-gold: #c59b27;
-      --secondary-gold: #e5c365;
-      --deep-red: #8f1d24;
-      --bg-cream: #fbf8ef;
-      --washi-border: #6d4b29;
-      --text-dark: #2c2523;
+      /* 和倉温泉 公式サイト（wakura.or.jp）イメージの和モダンパレット */
+      --wakura-ocean-deep: #0f354f;   /* 七尾湾の深碧・藍色 */
+      --wakura-ocean-mid: #1c5274;    /* 穏やかな海の青 */
+      --wakura-teal: #2f7a99;         /* 澄んだ温泉水・青緑 */
+      --wakura-accent-red: #c03838;   /* 祭りの熱気・朱赤 */
+      --wakura-gold: #c29938;         /* 白鷺の伝承・上品な金 */
+      --wakura-gold-light: #f1dfa5;   /* 明るい金砂子 */
+      --wakura-bg-soft: #f6f9fa;      /* 湯けむり・爽やかな背景白 */
+      --wakura-card: #ffffff;         /* 清潔なカード白 */
+      --wakura-border: #d4e2eb;       /* 波打ち際の淡いブルーグレー境界 */
+      --wakura-text-main: #1d2b36;    /* 藍墨色 */
+      --wakura-text-sub: #546879;     /* 落ち着いた薄墨色 */
+      --wakura-wakutama: #f7a828;     /* わくたまくんの温かい卵色 */
     }
 
     * {
@@ -34,52 +41,55 @@
 
     body {
       font-family: 'Shippori Mincho', serif;
-      background: #201a18;
-      color: var(--text-dark);
+      background: #eef3f6;
+      color: var(--wakura-text-main);
       overflow: hidden;
       height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* 上部ヘッダー (NIKKE風) */
+    /* 上部ヘッダー（七尾湾の深碧グラデーションと金ライン） */
     header {
-      background: linear-gradient(180deg, #1f1715 0%, rgba(31, 23, 21, 0.9) 100%);
-      border-bottom: 2px solid var(--primary-gold);
-      padding: 10px 16px;
+      background: linear-gradient(135deg, var(--wakura-ocean-deep) 0%, var(--wakura-ocean-mid) 100%);
+      border-bottom: 2px solid var(--wakura-gold);
+      padding: 11px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       z-index: 1000;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 16px rgba(15, 53, 79, 0.25);
     }
 
     .title-area h1 {
       font-size: 16px;
-      color: var(--secondary-gold);
-      letter-spacing: 1px;
-      text-shadow: 1px 1px 2px #000;
+      color: #ffffff;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
 
     .title-area span {
       font-size: 10px;
-      color: #dfd5c6;
+      color: var(--wakura-gold-light);
+      letter-spacing: 0.5px;
     }
 
     .status-badge {
-      background: rgba(0,0,0,0.6);
-      border: 1px solid var(--primary-gold);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid var(--wakura-gold-light);
       border-radius: 20px;
       padding: 4px 12px;
       display: flex;
       align-items: center;
       gap: 6px;
-      color: #fff;
+      color: #ffffff;
       font-size: 12px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
     }
 
     .status-badge b {
-      color: var(--secondary-gold);
+      color: var(--wakura-gold-light);
       font-size: 15px;
     }
 
@@ -88,18 +98,18 @@
       flex: 1;
       width: 100%;
       height: 100%;
-      background: #dfd7c5;
+      background: #e6eef2;
     }
 
-    /* 和風地図タイル用の彩度フィルター */
+    /* 地図タイルの彩度調整（明るく透明感のあるトーンへ） */
     .leaflet-tile {
-      filter: sepia(35%) contrast(95%) brightness(95%);
+      filter: saturate(85%) contrast(98%) brightness(101%);
     }
 
-    /* カスタムピンデザイン */
+    /* カスタムマーカーデザイン（清潔感ある白×深碧フレーム） */
     .custom-marker {
-      background: linear-gradient(135deg, #fff 0%, #f4ebd9 100%);
-      border: 2px solid var(--deep-red);
+      background: #ffffff;
+      border: 2px solid var(--wakura-ocean-mid);
       border-radius: 50%;
       width: 44px;
       height: 44px;
@@ -107,15 +117,15 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 12px rgba(15, 53, 79, 0.3);
       position: relative;
       cursor: pointer;
-      animation: pulse 2s infinite ease-in-out;
+      animation: pulse 2.2s infinite ease-in-out;
     }
 
     .custom-marker.cleared {
       border-color: #2e7d32;
-      background: #e8f5e9;
+      background: #f1f8f3;
     }
 
     .custom-marker .icon {
@@ -124,50 +134,71 @@
 
     .custom-marker .label-tag {
       position: absolute;
-      bottom: -20px;
+      bottom: -22px;
       white-space: nowrap;
-      background: rgba(30, 20, 15, 0.85);
-      color: #fff;
+      background: var(--wakura-ocean-deep);
+      color: #ffffff;
       font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      border: 1px solid var(--primary-gold);
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--wakura-gold);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
+      50% { transform: scale(1.07); }
     }
 
-    /* 下部情報バー */
+    /* 下部情報バー（清潔感のある白地×海碧のコントロール） */
     footer {
-      background: linear-gradient(0deg, #1f1715 0%, rgba(31, 23, 21, 0.95) 100%);
-      border-top: 2px solid var(--primary-gold);
+      background: #ffffff;
+      border-top: 1px solid var(--wakura-border);
       padding: 10px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       z-index: 1000;
+      box-shadow: 0 -2px 10px rgba(15, 53, 79, 0.06);
     }
 
-    .hint-btn, .nav-btn {
-      background: linear-gradient(180deg, #b9323b 0%, var(--deep-red) 100%);
-      color: #fff;
-      border: 1px solid var(--primary-gold);
-      padding: 8px 16px;
-      border-radius: 4px;
+    .hint-btn {
+      background: #ffffff;
+      color: var(--wakura-ocean-mid);
+      border: 1px solid var(--wakura-ocean-mid);
+      padding: 8px 14px;
+      border-radius: 20px;
       font-family: inherit;
       font-size: 13px;
+      font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: all 0.2s;
     }
 
-    /* モーダル枠 (NIKKE風 和風ポップアップ) */
+    .nav-btn {
+      background: linear-gradient(135deg, var(--wakura-teal) 0%, var(--wakura-ocean-mid) 100%);
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(47, 122, 153, 0.35);
+      transition: all 0.2s;
+    }
+
+    .hint-btn:active, .nav-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* モーダル枠（和倉温泉の海・和紙・金の装飾） */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(3px);
+      background: rgba(15, 53, 79, 0.65);
+      backdrop-filter: blur(4px);
       z-index: 2000;
       display: none;
       align-items: center;
@@ -180,14 +211,14 @@
     }
 
     .modal-container {
-      background: var(--bg-cream);
-      border: 3px solid var(--primary-gold);
-      border-radius: 12px;
+      background: var(--wakura-bg-soft);
+      border: 2px solid var(--wakura-gold);
+      border-radius: 14px;
       width: 100%;
       max-width: 440px;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      box-shadow: 0 16px 40px rgba(15, 53, 79, 0.4);
       position: relative;
       display: flex;
       flex-direction: column;
@@ -195,57 +226,65 @@
     }
 
     @keyframes popIn {
-      0% { opacity: 0; transform: scale(0.9); }
+      0% { opacity: 0; transform: scale(0.93); }
       100% { opacity: 1; transform: scale(1); }
     }
 
     .modal-header {
-      background: linear-gradient(90deg, #8f1d24, #b9323b);
-      color: #fff;
-      padding: 12px 16px;
+      background: linear-gradient(135deg, var(--wakura-ocean-deep) 0%, var(--wakura-ocean-mid) 100%);
+      color: #ffffff;
+      padding: 14px 16px;
       text-align: center;
       position: relative;
-      border-bottom: 2px solid var(--primary-gold);
+      border-bottom: 2px solid var(--wakura-gold);
     }
 
     .modal-header h2 {
-      font-size: 16px;
-      letter-spacing: 1px;
+      font-size: 17px;
+      letter-spacing: 1.2px;
+      color: #ffffff;
     }
 
     .close-btn {
       position: absolute;
       top: 10px;
       right: 12px;
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-size: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      color: #ffffff;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
     }
 
     .tabs {
       display: flex;
-      background: #e9e1cd;
-      border-bottom: 1px solid #d4c8af;
+      background: #e8eff3;
+      border-bottom: 1px solid var(--wakura-border);
     }
 
     .tab-btn {
       flex: 1;
-      padding: 10px;
+      padding: 11px;
       border: none;
       background: transparent;
       font-family: inherit;
       font-size: 13px;
       cursor: pointer;
-      color: #555;
+      color: var(--wakura-text-sub);
       font-weight: 700;
+      transition: all 0.2s;
     }
 
     .tab-btn.active {
-      background: var(--bg-cream);
-      color: var(--deep-red);
-      border-bottom: 2px solid var(--deep-red);
+      background: var(--wakura-bg-soft);
+      color: var(--wakura-ocean-mid);
+      border-bottom: 3px solid var(--wakura-teal);
     }
 
     .modal-body {
@@ -258,81 +297,87 @@
     .spot-guide-img {
       width: 100%;
       height: 140px;
-      border-radius: 6px;
+      border-radius: 8px;
       object-fit: cover;
       margin-bottom: 12px;
-      border: 1px solid #ccc;
-      background: #eae2d1;
+      border: 1px solid var(--wakura-border);
+      background: #e1ebf0;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 40px;
+      font-size: 42px;
+      color: var(--wakura-teal);
     }
 
     .spot-desc {
       font-size: 13px;
-      line-height: 1.6;
-      color: #444;
-      margin-bottom: 15px;
+      line-height: 1.7;
+      color: var(--wakura-text-main);
+      margin-bottom: 16px;
     }
 
     .google-nav-link {
       display: block;
       text-align: center;
-      background: #2c5e8a;
-      color: #fff;
+      background: linear-gradient(135deg, var(--wakura-teal) 0%, var(--wakura-ocean-mid) 100%);
+      color: #ffffff;
       text-decoration: none;
-      padding: 10px;
-      border-radius: 6px;
+      padding: 11px;
+      border-radius: 24px;
       font-size: 13px;
       font-weight: 700;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 10px rgba(47, 122, 153, 0.25);
     }
 
     /* 謎解きセクション */
     .riddle-story {
-      background: #f1ebd9;
-      border-left: 4px solid var(--deep-red);
-      padding: 8px 12px;
-      font-size: 12px;
+      background: #ffffff;
+      border-left: 4px solid var(--wakura-teal);
+      border-radius: 0 6px 6px 0;
+      padding: 10px 14px;
+      font-size: 12.5px;
       margin-bottom: 14px;
-      line-height: 1.5;
+      line-height: 1.6;
+      color: var(--wakura-text-main);
+      box-shadow: 0 2px 6px rgba(15, 53, 79, 0.05);
     }
 
     .riddle-item {
-      background: #fff;
-      border: 1px solid #e3d9c3;
-      border-radius: 6px;
-      padding: 10px;
-      margin-bottom: 8px;
+      background: #ffffff;
+      border: 1px solid var(--wakura-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 9px;
+      box-shadow: 0 1px 4px rgba(15, 53, 79, 0.04);
     }
 
     .riddle-q {
       font-size: 12px;
       font-weight: 700;
-      color: var(--deep-red);
+      color: var(--wakura-accent-red);
       margin-bottom: 4px;
     }
 
     .riddle-text {
       font-size: 12px;
-      color: #333;
+      color: var(--wakura-text-main);
+      line-height: 1.5;
     }
 
-    /* 解答入力欄 (NIKKE風) */
+    /* 解答入力欄 */
     .answer-box-wrap {
-      margin-top: 16px;
-      padding-top: 14px;
-      border-top: 1px dashed #d1c5a5;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--wakura-border);
       text-align: center;
     }
 
     .answer-label {
       font-size: 13px;
       font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       display: block;
-      color: #333;
+      color: var(--wakura-ocean-mid);
     }
 
     .input-row {
@@ -345,30 +390,38 @@
     .answer-input {
       width: 100%;
       max-width: 280px;
-      height: 42px;
+      height: 44px;
       font-size: 18px;
       text-align: center;
       letter-spacing: 4px;
-      border: 2px solid var(--primary-gold);
-      border-radius: 6px;
-      background: #fff;
+      border: 2px solid var(--wakura-teal);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--wakura-ocean-deep);
       font-family: inherit;
       outline: none;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .answer-input:focus {
+      border-color: var(--wakura-accent-red);
+      background: #fffcfc;
     }
 
     .submit-btn {
       width: 100%;
       max-width: 280px;
-      background: linear-gradient(180deg, #f5a623, #d47a08);
-      color: #fff;
-      border: 2px solid #fff;
-      padding: 10px;
+      background: linear-gradient(135deg, var(--wakura-accent-red) 0%, #a62b2b 100%);
+      color: #ffffff;
+      border: 1px solid var(--wakura-gold);
+      padding: 11px;
       border-radius: 30px;
       font-size: 15px;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 12px rgba(192, 56, 56, 0.3);
       font-family: inherit;
+      letter-spacing: 1px;
     }
 
     /* 正解・新スポット解放ファンファーレ */
@@ -376,8 +429,8 @@
       position: fixed;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%) scale(0.8);
-      background: #fffdf5;
-      border: 4px solid var(--primary-gold);
+      background: #ffffff;
+      border: 3px solid var(--wakura-gold);
       border-radius: 16px;
       padding: 24px 20px;
       text-align: center;
@@ -385,7 +438,7 @@
       width: 90%;
       max-width: 360px;
       display: none;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+      box-shadow: 0 16px 45px rgba(15, 53, 79, 0.4);
     }
 
     .celebrate-popup.show {
@@ -395,10 +448,11 @@
     }
 
     .celebrate-title {
-      color: var(--deep-red);
-      font-size: 22px;
+      color: var(--wakura-accent-red);
+      font-size: 21px;
       font-weight: 800;
       margin-bottom: 8px;
+      letter-spacing: 1px;
     }
   </style>
 </head>
@@ -464,9 +518,9 @@
 
   <!-- 正解・新スポット解放ファンファーレ -->
   <div class="celebrate-popup" id="celebrate-modal">
-    <div style="font-size: 40px; margin-bottom: 8px;">🎊</div>
+    <div style="font-size: 40px; margin-bottom: 8px;">🌸</div>
     <h3 class="celebrate-title">正解おめでとう！</h3>
-    <p id="celebrate-msg" style="font-size: 14px; line-height: 1.6; margin-bottom: 16px; color: #444;"></p>
+    <p id="celebrate-msg" style="font-size: 14px; line-height: 1.6; margin-bottom: 16px; color: var(--wakura-text-main);"></p>
     <button class="submit-btn" onclick="closeCelebrate()">次へ進む</button>
   </div>
 
@@ -550,12 +604,11 @@
     let currentActiveSpot = null;
 
     function renderMarkers() {
-      // 既存マーカーの削除
       Object.values(markers).forEach(m => map.removeLayer(m));
       markers = {};
 
       spotsData.forEach(spot => {
-        if (!spot.unlocked) return; // 未解放は表示しない
+        if (!spot.unlocked) return;
 
         const markerEl = document.createElement('div');
         markerEl.className = `custom-marker ${spot.cleared ? 'cleared' : ''}`;
@@ -612,8 +665,7 @@
         document.querySelector('.answer-box-wrap').style.display = 'block';
         document.getElementById('answer-input').value = '';
       } else {
-        // すでにクリア済み or ゴールスポット
-        listContainer.innerHTML = `<div style="text-align:center; padding: 20px; font-weight:700; color:var(--deep-red);">✨ このスポットの謎はクリア済みです！</div>`;
+        listContainer.innerHTML = `<div style="text-align:center; padding: 20px; font-weight:700; color:var(--wakura-teal);">✨ このスポットの謎はクリア済みです！</div>`;
         document.querySelector('.answer-box-wrap').style.display = 'none';
       }
 
@@ -655,7 +707,6 @@
         currentActiveSpot.cleared = true;
         closeModal();
 
-        // 次のスポット解放
         const nextSpot = spotsData.find(s => s.id === currentActiveSpot.id + 1);
         if (nextSpot) {
           nextSpot.unlocked = true;
@@ -693,7 +744,6 @@
       }
     }
 
-    // 初回描画
     renderMarkers();
   </script>
 </body>
