@@ -1,14 +1,761 @@
+<!DOCTYPE html>
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>和倉温泉 謎解きラリー 〜わくたまくんからの挑戦状〜</title>
-
-  <!-- ▼ ここから追加：ブラウザキャッシュを無効化する設定 ▼ -->
+  
+  <!-- ブラウザキャッシュを無効化する設定 -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <!-- ▲ ここまで ▲ -->
 
   <!-- Leaflet.js (地図ライブラリ) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  ...
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- Google Fonts (和風フォント) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Yuji+Boku&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* 和倉温泉 公式サイト（wakura.or.jp）イメージの和モダンパレット */
+      --wakura-ocean-deep: #0f354f;   /* 七尾湾の深碧・藍色 */
+      --wakura-ocean-mid: #1c5274;    /* 穏やかな海の青 */
+      --wakura-teal: #2f7a99;         /* 澄んだ温泉水・青緑 */
+      --wakura-accent-red: #c03838;   /* 祭りの熱気・朱赤 */
+      --wakura-gold: #c29938;         /* 白鷺の伝承・上品な金 */
+      --wakura-gold-light: #f1dfa5;   /* 明るい金砂子 */
+      --wakura-bg-soft: #f6f9fa;      /* 湯けむり・爽やかな背景白 */
+      --wakura-card: #ffffff;         /* 清潔なカード白 */
+      --wakura-border: #d4e2eb;       /* 波打ち際の淡いブルーグレー境界 */
+      --wakura-text-main: #1d2b36;    /* 藍墨色 */
+      --wakura-text-sub: #546879;     /* 落ち着いた薄墨色 */
+      --wakura-wakutama: #f7a828;     /* わくたまくんの温かい卵色 */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Shippori Mincho', serif;
+      background: #eef3f6;
+      color: var(--wakura-text-main);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 上部ヘッダー */
+    header {
+      background: linear-gradient(135deg, var(--wakura-ocean-deep) 0%, var(--wakura-ocean-mid) 100%);
+      border-bottom: 2px solid var(--wakura-gold);
+      padding: 11px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      box-shadow: 0 4px 16px rgba(15, 53, 79, 0.25);
+    }
+
+    .title-area h1 {
+      font-size: 16px;
+      color: #ffffff;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    .title-area span {
+      font-size: 10px;
+      color: var(--wakura-gold-light);
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid var(--wakura-gold-light);
+      border-radius: 20px;
+      padding: 4px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #ffffff;
+      font-size: 12px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .status-badge b {
+      color: var(--wakura-gold-light);
+      font-size: 15px;
+    }
+
+    /* 地図コンテナ */
+    #map {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: #e6eef2;
+    }
+
+    .leaflet-tile {
+      filter: saturate(85%) contrast(98%) brightness(101%);
+    }
+
+    /* マーカーデザイン */
+    .custom-marker {
+      background: #ffffff;
+      border: 2px solid var(--wakura-ocean-mid);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(15, 53, 79, 0.3);
+      position: relative;
+      cursor: pointer;
+      animation: pulse 2.2s infinite ease-in-out;
+    }
+
+    .custom-marker.cleared {
+      border-color: #2e7d32;
+      background: #f1f8f3;
+    }
+
+    .custom-marker .icon {
+      font-size: 20px;
+    }
+
+    .custom-marker .label-tag {
+      position: absolute;
+      bottom: -22px;
+      white-space: nowrap;
+      background: var(--wakura-ocean-deep);
+      color: #ffffff;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--wakura-gold);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.07); }
+    }
+
+    /* 下部情報バー */
+    footer {
+      background: #ffffff;
+      border-top: 1px solid var(--wakura-border);
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      box-shadow: 0 -2px 10px rgba(15, 53, 79, 0.06);
+    }
+
+    .hint-btn {
+      background: #ffffff;
+      color: var(--wakura-ocean-mid);
+      border: 1px solid var(--wakura-ocean-mid);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-btn {
+      background: linear-gradient(135deg, var(--wakura-teal) 0%, var(--wakura-ocean-mid) 100%);
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(47, 122, 153, 0.35);
+      transition: all 0.2s;
+    }
+
+    .hint-btn:active, .nav-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* モーダル枠 */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 53, 79, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-container {
+      background: var(--wakura-bg-soft);
+      border: 2px solid var(--wakura-gold);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 440px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 16px 40px rgba(15, 53, 79, 0.4);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.93); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, var(--wakura-ocean-deep) 0%, var(--wakura-ocean-mid) 100%);
+      color: #ffffff;
+      padding: 14px 16px;
+      text-align: center;
+      position: relative;
+      border-bottom: 2px solid var(--wakura-gold);
+    }
+
+    .modal-header h2 {
+      font-size: 17px;
+      letter-spacing: 1.2px;
+      color: #ffffff;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      color: #ffffff;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .tabs {
+      display: flex;
+      background: #e8eff3;
+      border-bottom: 1px solid var(--wakura-border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 11px;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--wakura-text-sub);
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--wakura-bg-soft);
+      color: var(--wakura-ocean-mid);
+      border-bottom: 3px solid var(--wakura-teal);
+    }
+
+    .modal-body {
+      padding: 18px 16px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .riddle-instruction {
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: var(--wakura-text-main);
+      text-align: center;
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+
+    .clue-visual-box {
+      background: #ffffff;
+      border: 1.5px solid var(--wakura-border);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(15, 53, 79, 0.05);
+    }
+
+    .clue-icon {
+      font-size: 44px;
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+
+    .clue-title {
+      font-size: 13px;
+      color: var(--wakura-accent-red);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .clue-sub {
+      font-size: 11.5px;
+      color: var(--wakura-text-sub);
+      margin-top: 4px;
+    }
+
+    .answer-box-wrap {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .answer-label {
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: block;
+      color: var(--wakura-ocean-mid);
+    }
+
+    .input-row {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .answer-input {
+      width: 100%;
+      max-width: 280px;
+      height: 44px;
+      font-size: 18px;
+      text-align: center;
+      letter-spacing: 4px;
+      border: 2px solid var(--wakura-teal);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--wakura-ocean-deep);
+      font-family: inherit;
+      outline: none;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .answer-input:focus {
+      border-color: var(--wakura-accent-red);
+      background: #fffcfc;
+    }
+
+    .submit-btn {
+      width: 100%;
+      max-width: 280px;
+      background: linear-gradient(135deg, var(--wakura-accent-red) 0%, #a62b2b 100%);
+      color: #ffffff;
+      border: 1px solid var(--wakura-gold);
+      padding: 11px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(192, 56, 56, 0.3);
+      font-family: inherit;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+
+    .submit-btn:active {
+      transform: scale(0.98);
+    }
+
+    .spot-guide-img {
+      width: 100%;
+      height: 140px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-bottom: 12px;
+      border: 1px solid var(--wakura-border);
+      background: #e1ebf0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      color: var(--wakura-teal);
+    }
+
+    .spot-desc {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--wakura-text-main);
+      margin-bottom: 16px;
+    }
+
+    .google-nav-link {
+      display: block;
+      text-align: center;
+      background: linear-gradient(135deg, var(--wakura-teal) 0%, var(--wakura-ocean-mid) 100%);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 11px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(47, 122, 153, 0.25);
+    }
+
+    .celebrate-popup {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: #ffffff;
+      border: 3px solid var(--wakura-gold);
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+      z-index: 3000;
+      width: 90%;
+      max-width: 360px;
+      display: none;
+      box-shadow: 0 16px 45px rgba(15, 53, 79, 0.4);
+    }
+
+    .celebrate-popup.show {
+      display: block;
+      transform: translate(-50%, -50%) scale(1);
+      animation: popIn 0.3s ease-out;
+    }
+
+    .celebrate-title {
+      color: var(--wakura-accent-red);
+      font-size: 21px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header>
+    <div class="title-area">
+      <h1>和倉温泉 謎解きミステリー</h1>
+      <span>わくたまくんからの挑戦状</span>
+    </div>
+    <div class="status-badge">
+      <span>解放状況:</span>
+      <b id="progress-text">1 / 3</b>
+    </div>
+  </header>
+
+  <!-- 地図コンテナ -->
+  <div id="map"></div>
+
+  <!-- フッター -->
+  <footer>
+    <button class="hint-btn" onclick="openStoryGuide()">📜 あらすじ・遊び方</button>
+    <button class="nav-btn" onclick="focusCurrentTarget()">📍 次の目的地へ</button>
+  </footer>
+
+  <!-- スポット用モーダル -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 id="modal-title">スポット名</h2>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-btn-riddle" onclick="switchTab('riddle')">謎解きに挑戦</button>
+        <button class="tab-btn" id="tab-btn-guide" onclick="switchTab('guide')">スポット案内</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 謎解きコンテンツ -->
+        <div id="tab-riddle">
+          <p class="riddle-instruction" id="riddle-prompt-text">
+            スポットの謎解きシートを手がかりに答えを導き出し、下の入力欄に入力してください。
+          </p>
+
+          <div class="clue-visual-box" id="clue-box">
+            <span class="clue-icon" id="clue-icon">📜</span>
+            <div class="clue-title" id="clue-title">「わくたまくんの文字パズル」</div>
+            <div class="clue-sub" id="clue-sub">謎解き用紙の文字パズルを解いて目的地を特定せよ</div>
+          </div>
+
+          <div class="answer-box-wrap" id="answer-box-wrap">
+            <span class="answer-label" id="answer-label">答えはひらがなで入力してください</span>
+            <div class="input-row">
+              <input type="text" id="answer-input" class="answer-input" placeholder="ここに入力">
+            </div>
+            <button class="submit-btn" onclick="checkAnswer()">判定する</button>
+          </div>
+
+          <div id="cleared-message-box" style="display:none; text-align:center; padding:20px; font-weight:700; color:var(--wakura-teal);">
+            ✨ このスポットの謎はクリア済みです！
+          </div>
+        </div>
+
+        <!-- スポット案内コンテンツ -->
+        <div id="tab-guide" style="display: none;">
+          <div class="spot-guide-img" id="spot-icon-display">🏛️</div>
+          <p class="spot-desc" id="spot-desc-text">案内文</p>
+          <a href="#" target="_blank" id="google-maps-link" class="google-nav-link">🗺️ Googleマップでルート案内を開く</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 正解・新スポット解放ファンファーレ -->
+  <div class="celebrate-popup" id="celebrate-modal">
+    <div style="font-size: 40px; margin-bottom: 8px;">🌸</div>
+    <h3 class="celebrate-title">正解おめでとう！</h3>
+    <p id="celebrate-msg" style="font-size: 14px; line-height: 1.6; margin-bottom: 16px; color: var(--wakura-text-main);"></p>
+    <button class="submit-btn" onclick="closeCelebrate()">次へ進む</button>
+  </div>
+
+  <script>
+    // --------------------------------------------------
+    // スポットデータ
+    // --------------------------------------------------
+    const spotsData = [
+      {
+        id: 1,
+        name: "和倉温泉観光会館",
+        lat: 37.0864,
+        lng: 136.9174,
+        icon: "🏢",
+        desc: "和倉温泉の中心にある観光拠点。周辺の宿泊施設やお祭り、観光体験情報が揃うスタート地点です。",
+        unlocked: true,
+        cleared: false,
+        prompt: "和倉温泉観光会館で手に入れた【挑戦1：わくたまくんの文字パズル】の答えを導き出し、下の入力欄に入力してください。",
+        clueIcon: "📜",
+        clueTitle: "【手がかり】文字パズル（8文字）",
+        clueSub: "用紙の8つのマス目を埋めて導き出される目的地は？",
+        charCountText: "答えはひらがな（8文字）で入力してください",
+        correctAnswers: ["おまつりかいかん", "オマツリカイカン"],
+        nextSpotName: "和倉温泉 お祭り会館"
+      },
+      {
+        id: 2,
+        name: "和倉温泉 お祭り会館",
+        lat: 37.0869,
+        lng: 136.9187,
+        icon: "🏮",
+        desc: "能登の観光拠点である和倉温泉街で祭りを紹介し、祭り文化を通じて七尾の魅力を発信。交流人口の拡大を目指して観光拠点施設。",
+        unlocked: false,
+        cleared: false,
+        prompt: "お祭り会館の展示スペース出口付近にある【挑戦2：わくたまくんの文字クイズ】を解き、下の入力欄に入力してください。",
+        clueIcon: "🏮",
+        clueTitle: "【手がかり】文字クイズ（5文字）",
+        clueSub: "お祭りの5つの謎を解いて導き出されるあま〜いご褒美スポットは？",
+        charCountText: "答えはひらがな（5文字）で入力してください",
+        correctAnswers: ["のとみるく", "ノトミルク"],
+        nextSpotName: "能登ミルク"
+      },
+      {
+        id: 3,
+        name: "能登ミルク（ごちそうゴール！）",
+        lat: 37.0885,
+        lng: 136.9155,
+        icon: "🍦",
+        desc: "能登半島の大自然で育った生乳を使用した絶品ジェラート（500円）やスイーツが楽しめる超人気カフェです！",
+        unlocked: false,
+        cleared: false,
+        prompt: "すべての謎を解き明かしました！ 美味しいジェラートやスイーツを味わって、和倉温泉の素敵な旅をお楽しみください！",
+        clueIcon: "🍨",
+        clueTitle: "【ゴール達成】お疲れさまでした！",
+        clueSub: "能登のめぐみいっぱいのスイーツをご堪能ください",
+        charCountText: "",
+        correctAnswers: [],
+        nextSpotName: ""
+      }
+    ];
+
+    // --------------------------------------------------
+    // 地図初期化
+    // --------------------------------------------------
+    const map = L.map('map', { zoomControl: false }).setView([37.0870, 136.9175], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    let markers = {};
+    let currentActiveSpot = null;
+
+    function renderMarkers() {
+      Object.values(markers).forEach(m => map.removeLayer(m));
+      markers = {};
+
+      spotsData.forEach(spot => {
+        if (!spot.unlocked) return;
+
+        const markerEl = document.createElement('div');
+        markerEl.className = `custom-marker ${spot.cleared ? 'cleared' : ''}`;
+        markerEl.innerHTML = `
+          <span class="icon">${spot.icon}</span>
+          <span class="label-tag">${spot.name}</span>
+        `;
+
+        const icon = L.divIcon({
+          html: markerEl,
+          className: '',
+          iconSize: [44, 44],
+          iconAnchor: [22, 22]
+        });
+
+        const marker = L.marker([spot.lat, spot.lng], { icon: icon }).addTo(map);
+        marker.on('click', () => openSpotModal(spot.id));
+        markers[spot.id] = marker;
+      });
+
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const clearedCount = spotsData.filter(s => s.cleared).length;
+      document.getElementById('progress-text').innerText = `${clearedCount + 1} / 3`;
+    }
+
+    // --------------------------------------------------
+    // モーダル操作
+    // --------------------------------------------------
+    function openSpotModal(spotId) {
+      currentActiveSpot = spotsData.find(s => s.id === spotId);
+      if (!currentActiveSpot) return;
+
+      document.getElementById('modal-title').innerText = currentActiveSpot.name;
+      document.getElementById('spot-icon-display').innerText = currentActiveSpot.icon;
+      document.getElementById('spot-desc-text').innerText = currentActiveSpot.desc;
+      document.getElementById('google-maps-link').href = 
+        `https://www.google.com/maps/dir/?api=1&destination=${currentActiveSpot.lat},${currentActiveSpot.lng}`;
+
+      document.getElementById('riddle-prompt-text').innerText = currentActiveSpot.prompt;
+      document.getElementById('clue-icon').innerText = currentActiveSpot.clueIcon;
+      document.getElementById('clue-title').innerText = currentActiveSpot.clueTitle;
+      document.getElementById('clue-sub').innerText = currentActiveSpot.clueSub;
+
+      const answerWrap = document.getElementById('answer-box-wrap');
+      const clearedBox = document.getElementById('cleared-message-box');
+
+      if (currentActiveSpot.correctAnswers.length > 0 && !currentActiveSpot.cleared) {
+        answerWrap.style.display = 'block';
+        clearedBox.style.display = 'none';
+        document.getElementById('answer-label').innerText = currentActiveSpot.charCountText;
+        document.getElementById('answer-input').value = '';
+      } else if (currentActiveSpot.cleared) {
+        answerWrap.style.display = 'none';
+        clearedBox.style.display = 'block';
+      } else {
+        answerWrap.style.display = 'none';
+        clearedBox.style.display = 'none';
+      }
+
+      switchTab('riddle');
+      document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    function switchTab(type) {
+      const tabRiddle = document.getElementById('tab-riddle');
+      const tabGuide = document.getElementById('tab-guide');
+      const btnRiddle = document.getElementById('tab-btn-riddle');
+      const btnGuide = document.getElementById('tab-btn-guide');
+
+      if (type === 'riddle') {
+        tabRiddle.style.display = 'block';
+        tabGuide.style.display = 'none';
+        btnRiddle.classList.add('active');
+        btnGuide.classList.remove('active');
+      } else {
+        tabRiddle.style.display = 'none';
+        tabGuide.style.display = 'block';
+        btnRiddle.classList.remove('active');
+        btnGuide.classList.add('active');
+      }
+    }
+
+    // --------------------------------------------------
+    // 解答判定 & 新スポット解放
+    // --------------------------------------------------
+    function checkAnswer() {
+      if (!currentActiveSpot) return;
+      const val = document.getElementById('answer-input').value.trim().toLowerCase();
+
+      if (currentActiveSpot.correctAnswers.includes(val)) {
+        currentActiveSpot.cleared = true;
+        closeModal();
+
+        const nextSpot = spotsData.find(s => s.id === currentActiveSpot.id + 1);
+        if (nextSpot) {
+          nextSpot.unlocked = true;
+          renderMarkers();
+          map.flyTo([nextSpot.lat, nextSpot.lng], 16, { animate: true, duration: 1.5 });
+          showCelebrate(
+            `見事に謎を解明しました！<br><br><b>新たなスポット【${nextSpot.name}】がマップに解放されました！</b><br>ピンをタップして向かいましょう！`
+          );
+        } else {
+          renderMarkers();
+          showCelebrate("全問クリア！ おめでとうございます！<br>能登ミルクで美味しいジェラートを味わって、素敵な和倉の旅を締めくくってください！");
+        }
+      } else {
+        alert("残念！ 答えが違うようだ…！\n手元の謎解き用紙をもう一度確認してみよう。");
+      }
+    }
+
+    function showCelebrate(msg) {
+      document.getElementById('celebrate-msg').innerHTML = msg;
+      document.getElementById('celebrate-modal').classList.add('show');
+    }
+
+    function closeCelebrate() {
+      document.getElementById('celebrate-modal').classList.remove('show');
+    }
+
+    function openStoryGuide() {
+      alert("【遊び方】\n1. 手元の「わくたまくんからの挑戦状」の謎を解く！\n2. マップ上のピンをタップして答えを入力！\n3. 正解すると新しいスポットが解放されます。\n4. 「スポット案内」からGoogleマップナビも利用できます。");
+    }
+
+    function focusCurrentTarget() {
+      const active = spotsData.slice().reverse().find(s => s.unlocked);
+      if (active) {
+        map.flyTo([active.lat, active.lng], 16);
+      }
+    }
+
+    renderMarkers();
+  </script>
+</body>
+</html>
