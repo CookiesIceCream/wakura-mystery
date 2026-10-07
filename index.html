@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>和倉温泉 謎解きラリー 〜わくたまくんからの挑戦状〜</title>
   
-  <!-- ブラウザキャッシュを無効化する設定 -->
+  <!-- ブラウザキャッシュを自動無効化する設定 -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -297,6 +297,7 @@
       overflow-y: auto;
     }
 
+    /* 謎解き入力画面（問題文は出さず、入力と案内に特化） */
     .riddle-instruction {
       font-size: 13.5px;
       line-height: 1.7;
@@ -361,7 +362,7 @@
       height: 44px;
       font-size: 18px;
       text-align: center;
-      letter-spacing: 4px;
+      letter-spacing: 3px;
       border: 2px solid var(--wakura-teal);
       border-radius: 8px;
       background: #ffffff;
@@ -473,7 +474,7 @@
     </div>
     <div class="status-badge">
       <span>解放状況:</span>
-      <b id="progress-text">1 / 3</b>
+      <b id="progress-text">1 / 5</b>
     </div>
   </header>
 
@@ -544,7 +545,7 @@
 
   <script>
     // --------------------------------------------------
-    // スポットデータ
+    // 全5スポットデータ（PDF 挑戦1〜挑戦3準拠）
     // --------------------------------------------------
     const spotsData = [
       {
@@ -583,17 +584,51 @@
       },
       {
         id: 3,
-        name: "能登ミルク（ごちそうゴール！）",
+        name: "能登ミルク",
         lat: 37.0885,
         lng: 136.9155,
         icon: "🍦",
         desc: "能登半島の大自然で育った生乳を使用した絶品ジェラート（500円）やスイーツが楽しめる超人気カフェです！",
         unlocked: false,
         cleared: false,
-        prompt: "すべての謎を解き明かしました！ 美味しいジェラートやスイーツを味わって、和倉温泉の素敵な旅をお楽しみください！",
-        clueIcon: "🍨",
-        clueTitle: "【ゴール達成】お疲れさまでした！",
-        clueSub: "能登のめぐみいっぱいのスイーツをご堪能ください",
+        prompt: "能登ミルクで手に入れた【挑戦3：わくたまくんの漢字クイズ】を解き、下の入力欄に入力してください。",
+        clueIcon: "✍️",
+        clueTitle: "【手がかり】漢字クイズ（7文字）",
+        clueSub: "漢字に隠された文字を拾って導き出される目的地は？",
+        charCountText: "答えはひらがな（7文字）で入力してください",
+        correctAnswers: ["ゆもとのひろば", "ユモトノヒロバ"],
+        nextSpotName: "湯元の広場"
+      },
+      {
+        id: 4,
+        name: "湯元の広場",
+        lat: 37.0894,
+        lng: 136.9149,
+        icon: "♨️",
+        desc: "和倉温泉発祥の地。地下から湧き出る約90℃の源泉や、シラサギが傷を癒やした伝説を伝えるモニュメントがあり、温泉たまご作り体験も人気です。",
+        unlocked: false,
+        cleared: false,
+        prompt: "湯元の広場で見つけた【わくたまくんのイラストクイズ】を解き、下の入力欄に入力してください。",
+        clueIcon: "🎨",
+        clueTitle: "【手がかり】イラストクイズ（3文字）",
+        clueSub: "青い円・車輪・時計のイラストが示す名刹のお寺は？",
+        charCountText: "答えを入力してください（ひらがな または 漢字）",
+        correctAnswers: ["せいりんじ", "セイリンジ", "青林寺"],
+        nextSpotName: "青林寺"
+      },
+      {
+        id: 5,
+        name: "青林寺（ゴール！）",
+        lat: 37.0873,
+        lng: 136.9128,
+        icon: "⛩️",
+        desc: "国登録有形文化財の御便殿や名勝指定の美しい庭園を有する曹洞宗の名刹。夕暮れ時の光やクロモジの香りが漂う心洗われる癒やしの空間です。",
+        unlocked: false,
+        cleared: false,
+        prompt: "すべての謎を解き明かしました！ 美しい庭園に囲まれた青林寺で、心静かなひとときをお過ごしください！",
+        clueIcon: "🌸",
+        clueTitle: "【完全踏破】おめでとうございます！",
+        clueSub: "和倉温泉の魅力と歴史を巡る旅を見事に達成しました！",
         charCountText: "",
         correctAnswers: [],
         nextSpotName: ""
@@ -603,7 +638,7 @@
     // --------------------------------------------------
     // 地図初期化
     // --------------------------------------------------
-    const map = L.map('map', { zoomControl: false }).setView([37.0870, 136.9175], 16);
+    const map = L.map('map', { zoomControl: false }).setView([37.0875, 136.9160], 16);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
       attribution: '© OpenStreetMap'
@@ -643,7 +678,7 @@
 
     function updateProgress() {
       const clearedCount = spotsData.filter(s => s.cleared).length;
-      document.getElementById('progress-text').innerText = `${clearedCount + 1} / 3`;
+      document.getElementById('progress-text').innerText = `${Math.min(clearedCount + 1, spotsData.length)} / ${spotsData.length}`;
     }
 
     // --------------------------------------------------
@@ -676,6 +711,7 @@
         answerWrap.style.display = 'none';
         clearedBox.style.display = 'block';
       } else {
+        // ゴール地点（解答欄なし）
         answerWrap.style.display = 'none';
         clearedBox.style.display = 'none';
       }
@@ -712,9 +748,9 @@
     // --------------------------------------------------
     function checkAnswer() {
       if (!currentActiveSpot) return;
-      const val = document.getElementById('answer-input').value.trim().toLowerCase();
+      const val = document.getElementById('answer-input').value.trim();
 
-      if (currentActiveSpot.correctAnswers.includes(val)) {
+      if (currentActiveSpot.correctAnswers.includes(val) || currentActiveSpot.correctAnswers.includes(val.toLowerCase())) {
         currentActiveSpot.cleared = true;
         closeModal();
 
@@ -728,7 +764,7 @@
           );
         } else {
           renderMarkers();
-          showCelebrate("全問クリア！ おめでとうございます！<br>能登ミルクで美味しいジェラートを味わって、素敵な和倉の旅を締めくくってください！");
+          showCelebrate("全問クリア！ おめでとうございます！<br>美しい青林寺の庭園を眺めながら、心温まる和倉の旅を締めくくってください！");
         }
       } else {
         alert("残念！ 答えが違うようだ…！\n手元の謎解き用紙をもう一度確認してみよう。");
