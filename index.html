@@ -297,7 +297,7 @@
       overflow-y: auto;
     }
 
-    /* 謎解き入力画面（問題文は出さず、入力と案内に特化） */
+    /* 謎解き入力画面 */
     .riddle-instruction {
       font-size: 13.5px;
       line-height: 1.7;
@@ -474,7 +474,7 @@
     </div>
     <div class="status-badge">
       <span>解放状況:</span>
-      <b id="progress-text">1 / 5</b>
+      <b id="progress-text">1 / 7</b>
     </div>
   </header>
 
@@ -537,15 +537,15 @@
 
   <!-- 正解・新スポット解放ファンファーレ -->
   <div class="celebrate-popup" id="celebrate-modal">
-    <div style="font-size: 40px; margin-bottom: 8px;">🌸</div>
-    <h3 class="celebrate-title">正解おめでとう！</h3>
+    <div style="font-size: 40px; margin-bottom: 8px;" id="celebrate-icon">🌸</div>
+    <h3 class="celebrate-title" id="celebrate-title-text">正解おめでとう！</h3>
     <p id="celebrate-msg" style="font-size: 14px; line-height: 1.6; margin-bottom: 16px; color: var(--wakura-text-main);"></p>
     <button class="submit-btn" onclick="closeCelebrate()">次へ進む</button>
   </div>
 
   <script>
     // --------------------------------------------------
-    // 全5スポットデータ（PDF 挑戦1〜挑戦4準拠）
+    // 全7スポットデータ（挑戦1〜挑戦7 完全準拠）
     // --------------------------------------------------
     const spotsData = [
       {
@@ -610,35 +610,69 @@
         cleared: false,
         prompt: "湯元の広場で見つけた【挑戦4：わくたまくんのイラストクイズ】を解き、下の入力欄に入力してください。",
         clueIcon: "🎨",
-        clueTitle: "【手がかり】イラストクイズ",
-        clueSub: "イラストが示す名刹のお寺は？",
+        clueTitle: "【手がかり】イラストクイズ（3文字）",
+        clueSub: "青い丸・車輪・時計のイラストが示す名刹のお寺は？",
         charCountText: "答えを入力してください（ひらがな または 漢字）",
         correctAnswers: ["せいりんじ", "セイリンジ", "青林寺"],
         nextSpotName: "青林寺"
       },
       {
         id: 5,
-        name: "青林寺（ゴール！）",
+        name: "青林寺",
         lat: 37.0873,
         lng: 136.9128,
         icon: "⛩️",
         desc: "国登録有形文化財の御便殿や名勝指定の美しい庭園を有する曹洞宗の名刹。夕暮れ時の光やクロモジの香りが漂う心洗われる癒やしの空間です。",
         unlocked: false,
         cleared: false,
-        prompt: "すべての謎を解き明かしました！ 美しい庭園に囲まれた青林寺で、心静かなひとときをお過ごしください！",
-        clueIcon: "🌸",
-        clueTitle: "【完全踏破】おめでとうございます！",
-        clueSub: "和倉温泉の魅力と歴史を巡る旅を見事に達成しました！",
-        charCountText: "",
-        correctAnswers: [],
-        nextSpotName: ""
+        prompt: "青林寺で見つけた【挑戦5：わくたまくんの探しクイズ】を解き、マークの示す場所を下の入力欄に入力してください。",
+        clueIcon: "🔍",
+        clueTitle: "【手がかり】マーク探しクイズ",
+        clueSub: "青林寺に隠された「蛇の目マーク」が導く名物グルメ店は？",
+        charCountText: "答えを入力してください（ひらがな または 漢字）",
+        correctAnswers: ["じゃのめずし", "ジャノメズシ", "蛇の目寿司", "蛇の目寿し", "蛇の目"],
+        nextSpotName: "蛇の目寿司"
+      },
+      {
+        id: 6,
+        name: "蛇の目寿司",
+        lat: 37.0888,
+        lng: 136.9162,
+        icon: "🍣",
+        desc: "和倉温泉で愛される老舗寿司店。七尾湾の新鮮な海の幸（寒ブリ、カニ、ウニ、能登前寿司）を職人の技で堪能できます。",
+        unlocked: false,
+        cleared: false,
+        prompt: "蛇の目寿司で手に入れた【挑戦6：わくたまくんのイラストクイズ】を解き、下の入力欄に入力してください。",
+        clueIcon: "🍣",
+        clueTitle: "【手がかり】イラストクイズ（8文字）",
+        clueSub: "愛の鍵、箱舟、足湯のイラストが示す海の絶景足湯スポットは？",
+        charCountText: "答えを入力してください（ひらがな または 漢字）",
+        correctAnswers: ["つまこいぶねのゆ", "ツマコイブネノユ", "妻恋舟の湯", "妻恋舟のゆ"],
+        nextSpotName: "妻恋舟の湯"
+      },
+      {
+        id: 7,
+        name: "妻恋舟の湯（湯っ足りパーク）",
+        lat: 37.0876,
+        lng: 136.9228,
+        icon: "♨️",
+        desc: "七尾湾を一望できる海沿いの公園「湯っ足りパーク」内にある絶景足湯。潮風を感じながらゆったりと天然温泉を楽しめます。",
+        unlocked: false,
+        cleared: false,
+        prompt: "ついに最終地点に到達！【挑戦7：わくたまくんの最終問題】を解き、和倉温泉を象徴する答えを下の入力欄に入力してください。",
+        clueIcon: "🌊",
+        clueTitle: "【最終挑戦】わくたまくんの最終問題",
+        clueSub: "和倉温泉は日本でどんな温泉の代表？（海、海苔、温泉から導き出せ）",
+        charCountText: "答えを入力してください（ひらがな または 漢字）",
+        correctAnswers: ["うみのおんせん", "ウミノオンセン", "海の温泉"],
+        nextSpotName: "" // 最終スポット
       }
     ];
 
     // --------------------------------------------------
     // 地図初期化
     // --------------------------------------------------
-    const map = L.map('map', { zoomControl: false }).setView([37.0875, 136.9160], 16);
+    const map = L.map('map', { zoomControl: false }).setView([37.0875, 136.9170], 16);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
       attribution: '© OpenStreetMap'
@@ -702,18 +736,14 @@
       const answerWrap = document.getElementById('answer-box-wrap');
       const clearedBox = document.getElementById('cleared-message-box');
 
-      if (currentActiveSpot.correctAnswers.length > 0 && !currentActiveSpot.cleared) {
+      if (!currentActiveSpot.cleared) {
         answerWrap.style.display = 'block';
         clearedBox.style.display = 'none';
         document.getElementById('answer-label').innerText = currentActiveSpot.charCountText;
         document.getElementById('answer-input').value = '';
-      } else if (currentActiveSpot.cleared) {
+      } else {
         answerWrap.style.display = 'none';
         clearedBox.style.display = 'block';
-      } else {
-        // ゴール地点（解答欄なし）
-        answerWrap.style.display = 'none';
-        clearedBox.style.display = 'none';
       }
 
       switchTab('riddle');
@@ -744,7 +774,7 @@
     }
 
     // --------------------------------------------------
-    // 解答判定 & 新スポット解放
+    // 解答判定 & 新スポット解放 / 最終クリア判定
     // --------------------------------------------------
     function checkAnswer() {
       if (!currentActiveSpot) return;
@@ -756,22 +786,34 @@
 
         const nextSpot = spotsData.find(s => s.id === currentActiveSpot.id + 1);
         if (nextSpot) {
+          // 次のスポット解放
           nextSpot.unlocked = true;
           renderMarkers();
           map.flyTo([nextSpot.lat, nextSpot.lng], 16, { animate: true, duration: 1.5 });
           showCelebrate(
+            "正解おめでとう！",
+            "🌸",
             `見事に謎を解明しました！<br><br><b>新たなスポット【${nextSpot.name}】がマップに解放されました！</b><br>ピンをタップして向かいましょう！`
           );
         } else {
+          // 最終問題クリア！（全スポット踏破）
           renderMarkers();
-          showCelebrate("全問クリア！ おめでとうございます！<br>美しい青林寺の庭園を眺めながら、心温まる和倉の旅を締めくくってください！");
+          showCelebrate(
+            "🎉 完全踏破おめでとうございます！ 🎉",
+            "♨️",
+            `<b>和倉温泉のすべての謎を見事に解き明かしました！</b><br><br>
+            和倉が誇る豊かな「海の温泉」、七尾湾の絶景、美味しい海の幸、そして人々の温もりを存分に体感していただけたでしょうか。<br><br>
+            足湯に浸かりながら、心ゆくまで和倉温泉のひとときをお楽しみください！`
+          );
         }
       } else {
         alert("残念！ 答えが違うようだ…！\n手元の謎解き用紙をもう一度確認してみよう。");
       }
     }
 
-    function showCelebrate(msg) {
+    function showCelebrate(title, icon, msg) {
+      document.getElementById('celebrate-title-text').innerText = title;
+      document.getElementById('celebrate-icon').innerText = icon;
       document.getElementById('celebrate-msg').innerHTML = msg;
       document.getElementById('celebrate-modal').classList.add('show');
     }
@@ -781,7 +823,7 @@
     }
 
     function openStoryGuide() {
-      alert("【遊び方】\n1. 手元の「わくたまくんからの挑戦状」の謎を解く！\n2. マップ上のピンをタップして答えを入力！\n3. 正解すると新しいスポットが解放されます。\n4. 「スポット案内」からGoogleマップナビも利用できます。");
+      alert("【遊び方】\n1. 手元の「わくたまくんからの挑戦状」の謎を解く！\n2. マップ上のピンをタップして答えを入力！\n3. 正解すると新しいスポットが解放されます。\n4. 「スポット案内」からGoogleマップナビも利用できます。\n5. 最後の「妻恋舟の湯」の謎を解いて完全クリアを目指そう！");
     }
 
     function focusCurrentTarget() {
