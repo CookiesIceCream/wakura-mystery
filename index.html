@@ -362,7 +362,7 @@
       height: 44px;
       font-size: 18px;
       text-align: center;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       border: 2px solid var(--wakura-teal);
       border-radius: 8px;
       background: #ffffff;
@@ -513,7 +513,7 @@
           </div>
 
           <div class="answer-box-wrap" id="answer-box-wrap">
-            <span class="answer-label" id="answer-label">答えはひらがなで入力してください</span>
+            <span class="answer-label" id="answer-label">答えを入力してください（ひらがな または 漢字）</span>
             <div class="input-row">
               <input type="text" id="answer-input" class="answer-input" placeholder="ここに入力">
             </div>
@@ -545,7 +545,7 @@
 
   <script>
     // --------------------------------------------------
-    // 全7スポットデータ
+    // 全7スポットデータ（漢字・ひらがな・カタカナ対応）
     // --------------------------------------------------
     const spotsData = [
       {
@@ -561,8 +561,8 @@
         clueIcon: "📜",
         clueTitle: "【手がかり】文字パズル（8文字）",
         clueSub: "用紙の8つのマス目を埋めて導き出される目的地は？",
-        charCountText: "答えはひらがな（8文字）で入力してください",
-        correctAnswers: ["おまつりかいかん", "オマツリカイカン"],
+        charCountText: "答えを入力してください（ひらがな または 漢字）",
+        correctAnswers: ["おまつりかいかん", "オマツリカイカン", "お祭り会館", "おまつり会館"],
         nextSpotName: "和倉温泉 お祭り会館"
       },
       {
@@ -578,8 +578,8 @@
         clueIcon: "🏮",
         clueTitle: "【手がかり】文字クイズ（5文字）",
         clueSub: "お祭りの5つの謎を解いて導き出されるあま〜いご褒美スポットは？",
-        charCountText: "答えはひらがな（5文字）で入力してください",
-        correctAnswers: ["のとみるく", "ノトミルク"],
+        charCountText: "答えを入力してください（ひらがな または 漢字）",
+        correctAnswers: ["のとみるく", "ノトミルク", "能登ミルク", "能登みるく"],
         nextSpotName: "能登ミルク"
       },
       {
@@ -595,8 +595,8 @@
         clueIcon: "✍️",
         clueTitle: "【手がかり】漢字クイズ（7文字）",
         clueSub: "漢字に隠された文字を拾って導き出される目的地は？",
-        charCountText: "答えはひらがな（7文字）で入力してください",
-        correctAnswers: ["ゆもとのひろば", "ユモトノヒロバ"],
+        charCountText: "答えを入力してください（ひらがな または 漢字）",
+        correctAnswers: ["ゆもとのひろば", "ユモトノヒロバ", "湯元の広場", "湯元広場"],
         nextSpotName: "湯元の広場"
       },
       {
