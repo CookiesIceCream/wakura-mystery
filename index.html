@@ -197,7 +197,7 @@
       transform: scale(0.97);
     }
 
-    /* モーダル枠 */
+    /* モーダル枠（共通オーバーレイ） */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -433,26 +433,17 @@
       box-shadow: 0 4px 10px rgba(47, 122, 153, 0.25);
     }
 
-    .celebrate-popup {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%) scale(0.8);
+    /* 正解ファンファーレポップアップ（スマホでも完全に画面中央に配置） */
+    .celebrate-card {
       background: #ffffff;
       border: 3px solid var(--wakura-gold);
       border-radius: 16px;
       padding: 24px 20px;
       text-align: center;
-      z-index: 3000;
-      width: 90%;
-      max-width: 360px;
-      display: none;
-      box-shadow: 0 16px 45px rgba(15, 53, 79, 0.4);
-    }
-
-    .celebrate-popup.show {
-      display: block;
-      transform: translate(-50%, -50%) scale(1);
-      animation: popIn 0.3s ease-out;
+      width: 100%;
+      max-width: 350px;
+      box-shadow: 0 16px 45px rgba(15, 53, 79, 0.5);
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .celebrate-title {
@@ -535,12 +526,14 @@
     </div>
   </div>
 
-  <!-- 正解・新スポット解放ファンファーレ -->
-  <div class="celebrate-popup" id="celebrate-modal">
-    <div style="font-size: 40px; margin-bottom: 8px;" id="celebrate-icon">🌸</div>
-    <h3 class="celebrate-title" id="celebrate-title-text">正解おめでとう！</h3>
-    <p id="celebrate-msg" style="font-size: 14px; line-height: 1.6; margin-bottom: 16px; color: var(--wakura-text-main);"></p>
-    <button class="submit-btn" onclick="closeCelebrate()">次へ進む</button>
+  <!-- 正解・新スポット解放ファンファーレ（完全中央配置のオーバーレイ方式） -->
+  <div class="modal-overlay" id="celebrate-modal" style="z-index: 3000;">
+    <div class="celebrate-card">
+      <div style="font-size: 40px; margin-bottom: 8px;" id="celebrate-icon">🌸</div>
+      <h3 class="celebrate-title" id="celebrate-title-text">正解おめでとう！</h3>
+      <p id="celebrate-msg" style="font-size: 14px; line-height: 1.6; margin-bottom: 16px; color: var(--wakura-text-main);"></p>
+      <button class="submit-btn" onclick="closeCelebrate()">次へ進む</button>
+    </div>
   </div>
 
   <script>
@@ -813,11 +806,11 @@
       document.getElementById('celebrate-title-text').innerText = title;
       document.getElementById('celebrate-icon').innerText = icon;
       document.getElementById('celebrate-msg').innerHTML = msg;
-      document.getElementById('celebrate-modal').classList.add('show');
+      document.getElementById('celebrate-modal').classList.add('active'); // 確実に画面中央に表示
     }
 
     function closeCelebrate() {
-      document.getElementById('celebrate-modal').classList.remove('show');
+      document.getElementById('celebrate-modal').classList.remove('active');
     }
 
     function openStoryGuide() {
