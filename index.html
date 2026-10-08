@@ -197,7 +197,7 @@
       transform: scale(0.97);
     }
 
-    /* モーダル枠（共通オーバーレイ） */
+    /* モーダル枠 */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -433,7 +433,7 @@
       box-shadow: 0 4px 10px rgba(47, 122, 153, 0.25);
     }
 
-    /* 正解ファンファーレポップアップ（スマホでも完全に画面中央に配置） */
+    /* 正解ファンファーレポップアップ */
     .celebrate-card {
       background: #ffffff;
       border: 3px solid var(--wakura-gold);
@@ -526,19 +526,19 @@
     </div>
   </div>
 
-  <!-- 正解・新スポット解放ファンファーレ（完全中央配置のオーバーレイ方式） -->
+  <!-- 正解・新スポット解放ファンファーレ -->
   <div class="modal-overlay" id="celebrate-modal" style="z-index: 3000;">
     <div class="celebrate-card">
       <div style="font-size: 40px; margin-bottom: 8px;" id="celebrate-icon">🌸</div>
       <h3 class="celebrate-title" id="celebrate-title-text">正解おめでとう！</h3>
       <p id="celebrate-msg" style="font-size: 14px; line-height: 1.6; margin-bottom: 16px; color: var(--wakura-text-main);"></p>
-      <button class="submit-btn" onclick="closeCelebrate()">次へ進む</button>
+      <button class="submit-btn" id="celebrate-btn" onclick="closeCelebrate()">次へ進む</button>
     </div>
   </div>
 
   <script>
     // --------------------------------------------------
-    // 全7スポットデータ（漢字・ひらがな・カタカナ対応）
+    // 全7スポットデータ
     // --------------------------------------------------
     const spotsData = [
       {
@@ -785,16 +785,19 @@
           showCelebrate(
             "正解おめでとう！",
             "🌸",
-            `見事に謎を解明しました！<br><br><b>新たなスポット【${nextSpot.name}】がマップに解放されました！</b><br>ピンをタップして向かいましょう！`
+            `見事に謎を解明しました！<br><br><b>新たなスポット【${nextSpot.name}】がマップに解放されました！</b><br>ピンをタップして向かいましょう！`,
+            "次へ進む"
           );
         } else {
+          // 最後のスポット（妻恋舟の湯）を解いた時
           renderMarkers();
           showCelebrate(
             "🎉 完全踏破おめでとうございます！ 🎉",
             "♨️",
             `<b>和倉温泉のすべての謎を見事に解き明かしました！</b><br><br>
             和倉が誇る豊かな「海の温泉」、七尾湾の絶景、美味しい海の幸、そして人々の温もりを存分に体感していただけたでしょうか。<br><br>
-            足湯に浸かりながら、心ゆくまで和倉温泉のひとときをお楽しみください！`
+            足湯に浸かりながら、心ゆくまで和倉温泉のひとときをお楽しみください！`,
+            "完成"
           );
         }
       } else {
@@ -802,11 +805,12 @@
       }
     }
 
-    function showCelebrate(title, icon, msg) {
+    function showCelebrate(title, icon, msg, btnText = "次へ進む") {
       document.getElementById('celebrate-title-text').innerText = title;
       document.getElementById('celebrate-icon').innerText = icon;
       document.getElementById('celebrate-msg').innerHTML = msg;
-      document.getElementById('celebrate-modal').classList.add('active'); // 確実に画面中央に表示
+      document.getElementById('celebrate-btn').innerText = btnText;
+      document.getElementById('celebrate-modal').classList.add('active');
     }
 
     function closeCelebrate() {
