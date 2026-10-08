@@ -197,7 +197,7 @@
       transform: scale(0.97);
     }
 
-    /* モーダル枠 */
+    /* モーダル枠（共通オーバーレイ） */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -453,6 +453,90 @@
       margin-bottom: 8px;
       letter-spacing: 1px;
     }
+
+    /* スタート時ウェルカムカード */
+    .welcome-card {
+      background: #ffffff;
+      border: 3px solid var(--wakura-gold);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 380px;
+      max-height: 88vh;
+      overflow-y: auto;
+      box-shadow: 0 16px 45px rgba(15, 53, 79, 0.5);
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .welcome-header {
+      background: linear-gradient(135deg, var(--wakura-ocean-deep) 0%, var(--wakura-ocean-mid) 100%);
+      color: #ffffff;
+      padding: 16px 14px;
+      text-align: center;
+      border-bottom: 2px solid var(--wakura-gold);
+    }
+
+    .welcome-body {
+      padding: 16px 16px 20px;
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--wakura-text-main);
+    }
+
+    .step-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      align-items: flex-start;
+      background: #f8fafc;
+      border: 1px solid var(--wakura-border);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .step-num {
+      background: var(--wakura-ocean-mid);
+      color: #ffffff;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 11px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-text {
+      flex: 1;
+    }
+
+    .step-text b {
+      color: var(--wakura-ocean-deep);
+    }
+
+    .gift-box {
+      background: #fff8eb;
+      border: 1.5px dashed var(--wakura-gold);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      margin: 14px 0 16px;
+    }
+
+    .gift-title {
+      color: var(--wakura-accent-red);
+      font-weight: 800;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      margin-bottom: 6px;
+    }
   </style>
 </head>
 <body>
@@ -474,9 +558,62 @@
 
   <!-- フッター -->
   <footer>
-    <button class="hint-btn" onclick="openStoryGuide()">📜 あらすじ・遊び方</button>
+    <button class="hint-btn" onclick="openStoryGuide()">📜 遊び方・お土産案内</button>
     <button class="nav-btn" onclick="focusCurrentTarget()">📍 次の目的地へ</button>
   </footer>
+
+  <!-- ウェルカム・遊び方＆ルール説明モーダル（入室時に表示） -->
+  <div class="modal-overlay active" id="welcome-modal" style="z-index: 3500;">
+    <div class="welcome-card">
+      <div class="welcome-header">
+        <div style="font-size: 32px; margin-bottom: 4px;">♨️🥚</div>
+        <h2 style="font-size: 17px; letter-spacing: 1px;">わくたまくんからの挑戦状へようこそ！</h2>
+        <div style="font-size: 11px; color: var(--wakura-gold-light); margin-top: 2px;">和倉温泉 まち歩き謎解きラリー</div>
+      </div>
+      <div class="welcome-body">
+        <p style="margin-bottom: 12px; text-align: center;">
+          和倉の温泉街を巡りながら謎を解き明かし、隠された魅力や歴史を体感しよう！
+        </p>
+
+        <div style="font-weight: 700; color: var(--wakura-ocean-mid); margin-bottom: 8px;">▼ ゲームの流れと遊び方 ▼</div>
+
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <b>手元の謎解き用紙を解く</b><br>
+            「わくたまくんからの挑戦状」の冊子に書かれた暗号やクイズを解き進めよう！
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <b>マップのピンから答えを入力</b><br>
+            マップ上の光るピンをタップし、導き出した答えを送信して正解判定！
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <b>新しいスポットが次々に解放！</b><br>
+            正解すると次の目的地がマップに出現。「スポット案内」からGoogleマップナビも使えます。
+          </div>
+        </div>
+
+        <!-- お土産特典の案内 -->
+        <div class="gift-box">
+          <div class="gift-title">🎁 【全問クリアでお土産プレゼント！】</div>
+          全7スポットを巡り、最後の<b>「妻恋舟の湯」</b>の謎を解いたら、完了画面を<b>「和倉温泉観光会館」</b>の受付スタッフに見せてください。<br>
+          <span style="font-weight: 700; color: var(--wakura-accent-red);">素敵な特製お土産をプレゼントします！</span>
+        </div>
+
+        <button class="submit-btn" style="margin: 0 auto; display: block;" onclick="closeWelcomeModal()">
+          謎解きをスタートする！
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- スポット用モーダル -->
   <div class="modal-overlay" id="modal">
@@ -796,7 +933,10 @@
             "♨️",
             `<b>和倉温泉のすべての謎を見事に解き明かしました！</b><br><br>
             和倉が誇る豊かな「海の温泉」、七尾湾の絶景、美味しい海の幸、そして人々の温もりを存分に体感していただけたでしょうか。<br><br>
-            足湯に浸かりながら、心ゆくまで和倉温泉のひとときをお楽しみください！`,
+            <div style="background:#fff4e6; border:1px dashed var(--wakura-gold); padding:10px; border-radius:8px; margin-top:10px;">
+              <b style="color:var(--wakura-accent-red);">🎁 お土産を受け取ろう！</b><br>
+              この完了画面を<b>「和倉温泉観光会館」</b>の受付スタッフに見せて、特製のお土産を受け取ってください！
+            </div>`,
             "完成"
           );
         }
@@ -817,8 +957,13 @@
       document.getElementById('celebrate-modal').classList.remove('active');
     }
 
+    // ウェルカムモーダル開閉
     function openStoryGuide() {
-      alert("【遊び方】\n1. 手元の「わくたまくんからの挑戦状」の謎を解く！\n2. マップ上のピンをタップして答えを入力！\n3. 正解すると新しいスポットが解放されます。\n4. 「スポット案内」からGoogleマップナビも利用できます。\n5. 最後の「妻恋舟の湯」の謎を解いて完全クリアを目指そう！");
+      document.getElementById('welcome-modal').classList.add('active');
+    }
+
+    function closeWelcomeModal() {
+      document.getElementById('welcome-modal').classList.remove('active');
     }
 
     function focusCurrentTarget() {
